@@ -1,14 +1,7 @@
-*.class
-*.zip
-/nbproject/private/
-/build/
-/dist
-/examples/camdate/nbproject/private/
-/examples/camdate/build/
-/examples/camdate/dist/
-/capture/nbproject/private/
-/capture/build/
-/capture/dist/
-/examples/capture/build/
-/examples/capture/dist/
-/examples/capture/nbproject/private/
+#Eclipse stuff
+.settings
+.classpath
+.project
+
+#Build stuff
+target
