@@ -25,6 +25,7 @@ import com.sun.jna.Pointer;
 import com.sun.jna.PointerType;
 import com.sun.jna.ptr.FloatByReference;
 import com.sun.jna.ptr.IntByReference;
+import com.sun.jna.ptr.LongByReference;
 import com.sun.jna.ptr.NativeLongByReference;
 import com.sun.jna.ptr.PointerByReference;
 import java.nio.ByteBuffer;
@@ -1986,7 +1987,7 @@ public interface Gphoto2Library extends Library {
 	 * @deprecated use the safer methods {@link #gp_file_get_data_and_size(com.angryelectron.libgphoto2.Gphoto2Library.CameraFile, java.lang.String[], com.sun.jna.ptr.NativeLongByReference)} and {@link #gp_file_get_data_and_size(com.angryelectron.libgphoto2.Gphoto2Library.CameraFile, com.sun.jna.ptr.PointerByReference, com.sun.jna.ptr.NativeLongByReference)} instead
 	 */
 	@Deprecated 
-	int gp_file_get_data_and_size(Gphoto2Library.CameraFile CameraFilePtr1, PointerByReference data, NativeLongByReference size);
+	int gp_file_get_data_and_size(Gphoto2Library.CameraFile CameraFilePtr1, PointerByReference data, LongByReference size);
 	/**
 	 * Original signature : <code>int gp_file_get_data_and_size(CameraFile*, const char**, unsigned long*)</code><br>
 	 * <i>native declaration : /usr/include/gphoto2/gphoto2-file.h:457</i>

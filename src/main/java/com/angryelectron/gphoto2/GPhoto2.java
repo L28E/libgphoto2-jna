@@ -37,12 +37,19 @@ import com.angryelectron.libgphoto2.Gphoto2Library.GPPortInfoList;
 import com.angryelectron.libgphoto2.Gphoto2Library.va_list;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
+import com.sun.jna.ptr.LongByReference;
+import com.sun.jna.ptr.NativeLongByReference;
 import com.sun.jna.ptr.PointerByReference;
+
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 /**
  * Simple API for controlling a camera using libgphoto2.
@@ -289,6 +296,39 @@ public class GPhoto2 {
         CameraFilePath path = captureImage();
         return new String(path.name);
     }
+    
+    /**
+     * Get the liveview.
+     *
+     * @return CameraFile which references the bytestream for the preview.
+     * @throws IOException If preview cannot be captured.
+     */    
+    public BufferedImage capturePreview() throws IOException{	
+    	int rc;
+    	
+    	/* initialize a CameraFile object */        
+        CameraFile ref[] = new CameraFile[1];
+        rc = gphoto2.gp_file_new(ref);
+        if (rc != Gphoto2Library.GP_OK) {
+            throw new IOException("gp_file_new failed with code " + rc);
+        }
+        
+        CameraFile cameraFile = ref[0];   	
+                
+        rc = gphoto2.gp_camera_capture_preview(camera, cameraFile, context);
+        if (rc != Gphoto2Library.GP_OK) {
+            throw new IOException("gp_camera_capture_preview failed with code " + rc);
+        }
+                
+        PointerByReference data = new PointerByReference();
+        LongByReference size = new LongByReference();
+        rc=gphoto2.gp_file_get_data_and_size(cameraFile, data, size);
+        
+        byte[] bArr = data.getValue().getByteArray(0, (int) size.getValue());
+        
+        final BufferedImage image = ImageIO.read(new ByteArrayInputStream(bArr));
+        return image;        
+    } 
 
     /**
      * Take a picture and save it to disk. Currently images can only be saved
