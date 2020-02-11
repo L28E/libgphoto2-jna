@@ -298,36 +298,38 @@ public class GPhoto2 {
     }
     
     /**
-     * Get the liveview.
+     * Get a single liveview frame.
      *
-     * @return CameraFile which references the bytestream for the preview.
-     * @throws IOException If preview cannot be captured.
-     */    
-    public BufferedImage capturePreview() throws IOException{	
+     * @return A reference to the bytestream for the liveview.
+     * @throws IOException If liveview cannot be captured.
+     */        
+	public BufferedImage capturePreview() throws IOException{	
+    	PointerByReference data = new PointerByReference();
+        LongByReference size = new LongByReference();    	
     	int rc;
     	
-    	/* initialize a CameraFile object */        
+    	// initialize a CameraFile object      
         CameraFile ref[] = new CameraFile[1];
         rc = gphoto2.gp_file_new(ref);
         if (rc != Gphoto2Library.GP_OK) {
             throw new IOException("gp_file_new failed with code " + rc);
-        }
+        }       
         
-        CameraFile cameraFile = ref[0];   	
-                
-        rc = gphoto2.gp_camera_capture_preview(camera, cameraFile, context);
+        // start a liveview, pointed to by the CameraFile object
+        rc = gphoto2.gp_camera_capture_preview(camera, ref[0], context);
         if (rc != Gphoto2Library.GP_OK) {
             throw new IOException("gp_camera_capture_preview failed with code " + rc);
+        }                
+        
+        // get the liveview data from the CameraFile object
+        rc=gphoto2.gp_file_get_data_and_size(ref[0], data, size);
+        if (rc != Gphoto2Library.GP_OK) {
+            throw new IOException("gp_file_get_data_and_size failed with code " + rc);
         }
-                
-        PointerByReference data = new PointerByReference();
-        LongByReference size = new LongByReference();
-        rc=gphoto2.gp_file_get_data_and_size(cameraFile, data, size);
         
+        // convert to an input stream, then an image, and return.
         byte[] bArr = data.getValue().getByteArray(0, (int) size.getValue());
-        
-        final BufferedImage image = ImageIO.read(new ByteArrayInputStream(bArr));
-        return image;        
+        return ImageIO.read(new ByteArrayInputStream(bArr));
     } 
 
     /**
