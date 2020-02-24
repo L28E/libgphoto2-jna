@@ -303,7 +303,7 @@ public class GPhoto2 {
      * @return A reference to the bytestream for the liveview.
      * @throws IOException If liveview cannot be captured.
      */        
-	public BufferedImage capturePreview() throws IOException{	
+	public byte[] capturePreview() throws IOException{	
     	PointerByReference data = new PointerByReference();
         LongByReference size = new LongByReference();    	
     	int rc;
@@ -328,8 +328,7 @@ public class GPhoto2 {
         }
         
         // convert to an input stream, then an image, and return.
-        byte[] bArr = data.getValue().getByteArray(0, (int) size.getValue());
-        return ImageIO.read(new ByteArrayInputStream(bArr));
+        return data.getValue().getByteArray(0, (int) size.getValue());        
     } 
 
     /**
