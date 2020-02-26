@@ -328,19 +328,18 @@ public class GPhoto2 {
         LongByReference size = new LongByReference();    	
     	int rc;             
         
-        // start a liveview, pointed to by the CameraFile object
-        rc = gphoto2.gp_camera_capture_preview(camera, ref, context);
-        if (rc != Gphoto2Library.GP_OK) {
-            throw new IOException("gp_camera_capture_preview failed with code " + rc);
-        }                
+        // Get a frame.
+    	do {
+    		rc = gphoto2.gp_camera_capture_preview(camera, ref, context);
+    	}while(Gphoto2Library.GP_ERROR_CAMERA_BUSY==rc);             
         
-        // get the liveview data from the CameraFile object
+        // Get the liveview data from the CameraFile object.
         rc=gphoto2.gp_file_get_data_and_size(ref, data, size);
         if (rc != Gphoto2Library.GP_OK) {
             throw new IOException("gp_file_get_data_and_size failed with code " + rc);
         }
         
-        // convert to an input stream, then an image, and return.
+        // Return a byte array representing the jpg.
         return data.getValue().getByteArray(0, (int) size.getValue());        
     }
 	
