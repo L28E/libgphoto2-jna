@@ -343,6 +343,25 @@ public class GPhoto2 {
         return data.getValue().getByteArray(0, (int) size.getValue());        
     }
 	
+    /**
+     * Capture an Image.
+     *
+     * @return CameraFilePath which references the captured image.
+     * @throws IOException If image cannot be captured.
+     */
+    private CameraFilePath captureImage() throws IOException {
+        CameraFilePath cameraFilePath = new CameraFilePath();       
+        int rc;
+        
+        do {
+        	rc = gphoto2.gp_camera_capture(camera, CameraCaptureType.GP_CAPTURE_IMAGE, cameraFilePath, context);
+    	}while(Gphoto2Library.GP_ERROR_CAMERA_BUSY==rc); 
+        
+        if (this.waitForEvent) {
+            waitForEvent(5000, CameraEventType.GP_EVENT_CAPTURE_COMPLETE);
+        }
+        return cameraFilePath;
+    }
 //==================================================================================
 
     /**
@@ -463,24 +482,6 @@ public class GPhoto2 {
                 throw new IOException("Timeout occured waiting for event " + event);
             }
         }
-    }
-
-    /**
-     * Capture an Image.
-     *
-     * @return CameraFilePath which references the captured image.
-     * @throws IOException If image cannot be captured.
-     */
-    private CameraFilePath captureImage() throws IOException {
-        CameraFilePath cameraFilePath = new CameraFilePath();
-        int result = gphoto2.gp_camera_capture(camera, CameraCaptureType.GP_CAPTURE_IMAGE, cameraFilePath, context);
-        if (result != Gphoto2Library.GP_OK) {
-            throw new IOException(error + "(" + result + ")");
-        }
-        if (this.waitForEvent) {
-            waitForEvent(5000, CameraEventType.GP_EVENT_CAPTURE_COMPLETE);
-        }
-        return cameraFilePath;
     }
 
     /**
