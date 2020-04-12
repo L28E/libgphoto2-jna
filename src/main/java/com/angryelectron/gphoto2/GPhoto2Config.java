@@ -91,7 +91,7 @@ public class GPhoto2Config {
 	 * @return CameraWidget object.
 	 * @throws IOException If parameter is invalid or cannot be retrieved.
 	 */
-	private CameraWidget getParameterWidget(String param) throws IOException {
+	public CameraWidget getParameterWidget(String param) throws IOException {
 		Pointer name = new Memory(param.length() + 1);
 		name.setString(0, param);
 		CameraWidget[] childs = new CameraWidget[1];
