@@ -109,7 +109,7 @@ public class GPhoto2Config {
 	 * @return A String representing the parameter's value.
 	 * @throws IOException If the value cannot be read.
 	 */
-	private String getParameterValue(CameraWidget paramWidget) throws IOException {
+	public String getParameterValue(CameraWidget paramWidget) throws IOException {
 		int rc;
 
 		IntBuffer type = IntBuffer.allocate(4);
